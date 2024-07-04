@@ -54,7 +54,7 @@ require("lazy").setup({
 -- Load additional configurations
 require("config.keymaps")
 require("config.lsp")
-require("config.theme") -- load the theme configuration
+require("config.theme")
 
 -- Enable syntax highlighting and plugins
 vim.cmd("syntax on")

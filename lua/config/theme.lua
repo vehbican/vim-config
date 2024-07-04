@@ -1,6 +1,5 @@
 -- ~/.config/nvim/lua/config/theme.lua
 
--- Load the Catppuccin theme
 require("catppuccin").setup({
   flavour = "mocha",
   background = {
