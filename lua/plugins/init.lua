@@ -1,3 +1,4 @@
+
 return {
   {
     "stevearc/conform.nvim",
@@ -5,7 +6,6 @@ return {
     opts = require "configs.conform",
   },
 
-  -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
     config = function()
@@ -13,13 +13,26 @@ return {
     end,
   },
 
-  -- {
-  -- 	"nvim-treesitter/nvim-treesitter",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"vim", "lua", "vimdoc",
-  --      "html", "css"
-  -- 		},
-  -- 	},
-  -- },
+  {
+    "jose-elias-alvarez/null-ls.nvim", -- Add null-ls plugin
+    config = function()
+      require("null-ls").setup({
+        sources = {
+          require("null-ls").builtins.formatting.prettier.with({
+            filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact", "html", "css" },
+          }),
+        },
+        on_attach = function(client, bufnr)
+          if client.supports_method("textDocument/formatting") then
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              buffer = bufnr,
+              callback = function()
+                vim.lsp.buf.format({ async = false })
+              end,
+            })
+          end
+        end,
+      })
+    end,
+  },
 }

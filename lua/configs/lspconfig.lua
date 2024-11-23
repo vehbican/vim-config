@@ -1,5 +1,6 @@
 -- Load defaults for LSP
 require("nvchad.configs.lspconfig").defaults()
+require("configs.null-ls")
 
 local lspconfig = require "lspconfig"
 local nvlsp = require "nvchad.configs.lspconfig"
@@ -39,9 +40,51 @@ lspconfig.ts_ls.setup {
   root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", ".git"),
 }
 
+-- Configure GraphQL Language Server
 lspconfig.graphql.setup {
   on_attach = nvlsp.on_attach,
   capabilities = nvlsp.capabilities,
   filetypes = { "graphql", "typescriptreact", "javascriptreact" },
 }
+
+-- Configure Dart Language Server
+lspconfig.dartls.setup {
+  cmd = { "dart", "language-server", "--protocol=lsp" }, -- Ensure `dart` is in PATH
+  filetypes = { "dart" },
+  root_dir = lspconfig.util.root_pattern("pubspec.yaml", ".git"),
+  on_attach = nvlsp.on_attach,
+  capabilities = nvlsp.capabilities,
+  settings = {
+    dart = {
+      completeFunctionCalls = true,
+      analysisExcludedFolders = {
+        vim.fn.expand("$HOME/.pub-cache"),
+        vim.fn.expand("$HOME/flutter"),
+      },
+    },
+  },
+}
+
+-- Import null-ls
+local null_ls = require("null-ls")
+
+-- Configure null-ls
+null_ls.setup({
+  sources = {
+    null_ls.builtins.formatting.prettier.with({
+      filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "html", "css" },
+    }),
+  },
+  on_attach = function(client, bufnr)
+    -- Enable formatting on save
+    if client.supports_method("textDocument/formatting") then
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format({ async = false })
+        end,
+      })
+    end
+  end,
+})
 
