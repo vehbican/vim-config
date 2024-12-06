@@ -43,3 +43,12 @@ local nvm_path = home .. "/.nvm/versions/node/v18.14.0/bin"
 -- Add nvm path to Neovim's PATH
 vim.env.PATH = nvm_path .. ":" .. vim.env.PATH
 
+-- Disable line numbers for all terminal windows
+vim.api.nvim_create_autocmd("TermOpen", {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+  end,
+})
+
