@@ -47,23 +47,7 @@ lspconfig.graphql.setup {
   filetypes = { "graphql", "typescriptreact", "javascriptreact" },
 }
 
--- Configure Dart Language Server
-lspconfig.dartls.setup {
-  cmd = { "dart", "language-server", "--protocol=lsp" }, -- Ensure `dart` is in PATH
-  filetypes = { "dart" },
-  root_dir = lspconfig.util.root_pattern("pubspec.yaml", ".git"),
-  on_attach = nvlsp.on_attach,
-  capabilities = nvlsp.capabilities,
-  settings = {
-    dart = {
-      completeFunctionCalls = true,
-      analysisExcludedFolders = {
-        vim.fn.expand("$HOME/.pub-cache"),
-        vim.fn.expand("$HOME/flutter"),
-      },
-    },
-  },
-}
+
 
 -- Import null-ls
 local null_ls = require("null-ls")
@@ -87,4 +71,26 @@ null_ls.setup({
     end
   end,
 })
+
+
+lspconfig.dartls.setup {
+  cmd = { "dart", "language-server", "--protocol=lsp" },
+  filetypes = { "dart" },
+  root_dir = lspconfig.util.root_pattern("pubspec.yaml", ".git"),
+  on_attach = function(client, bufnr)
+    nvlsp.on_attach(client, bufnr) -- Call NvChad's default on_attach
+
+    -- Enable formatting on save
+    if client.supports_method("textDocument/formatting") then
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format({ async = false })
+        end,
+      })
+    end
+  end,
+  capabilities = nvlsp.capabilities,
+}
+
 
