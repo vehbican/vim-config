@@ -14,9 +14,12 @@ vim.api.nvim_set_keymap('v', '<C-a>', 'ggVG', { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<C-S-Left>", "v<Left>e", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<C-S-Right>", "v<Right>e", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "F", ":lua vim.lsp.buf.format()<CR>", { noremap = true, silent = true })
 
 -- New mapping for vertical split with terminal
+--
 map("n", "<leader>vs", function()
+
   vim.cmd("vsplit")                  -- Create a vertical split
   vim.cmd("wincmd l")                -- Focus the right split
   vim.cmd("terminal")                -- Open a terminal in the right split
