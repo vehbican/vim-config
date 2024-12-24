@@ -23,4 +23,4 @@ map("n", "<leader>vs", function()
   vim.cmd("vertical resize 60")
   vim.cmd("wincmd h")
 end, { desc = "Vertical split with terminal on the right" })
-
+map('n', 'dd', '"_dd', { noremap = true, silent = true })
