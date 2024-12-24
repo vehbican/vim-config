@@ -1,7 +1,6 @@
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
 vim.g.mapleader = " "
 
--- bootstrap lazy and all plugins
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
 if not vim.uv.fs_stat(lazypath) then
@@ -13,7 +12,6 @@ vim.opt.rtp:prepend(lazypath)
 
 local lazy_config = require "configs.lazy"
 
--- load plugins
 require("lazy").setup({
   {
     "NvChad/NvChad",
@@ -36,14 +34,11 @@ vim.schedule(function()
   require "mappings"
 end)
 
--- Configure Neovim to recognize Node and npm installed via nvm
 local home = os.getenv("HOME")
 local nvm_path = home .. "/.nvm/versions/node/v18.14.0/bin"
 
--- Add nvm path to Neovim's PATH
 vim.env.PATH = nvm_path .. ":" .. vim.env.PATH
 
--- Disable line numbers for all terminal windows
 vim.api.nvim_create_autocmd("TermOpen", {
   pattern = "*",
   callback = function()
@@ -51,4 +46,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
     vim.opt_local.relativenumber = false
   end,
 })
+
+require("configs.nvimtree")
 

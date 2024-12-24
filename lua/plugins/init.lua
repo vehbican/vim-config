@@ -2,7 +2,6 @@
 return {
   {
     "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
     opts = require "configs.conform",
   },
 
@@ -12,9 +11,8 @@ return {
       require "configs.lspconfig"
     end,
   },
-
   {
-    "jose-elias-alvarez/null-ls.nvim", -- Add null-ls plugin
+    "jose-elias-alvarez/null-ls.nvim",
     config = function()
       require("null-ls").setup({
         sources = {
