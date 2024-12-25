@@ -1,6 +1,5 @@
 require "nvchad.mappings"
 
-
 local map = vim.keymap.set
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
@@ -15,7 +14,6 @@ vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = 
 vim.api.nvim_set_keymap("n", "F", ":lua vim.lsp.buf.format()<CR>", { noremap = true, silent = true })
 
 map("n", "<leader>vs", function()
-
   vim.cmd("vsplit")
   vim.cmd("wincmd l")
   vim.cmd("terminal")
@@ -24,3 +22,7 @@ map("n", "<leader>vs", function()
   vim.cmd("wincmd h")
 end, { desc = "Vertical split with terminal on the right" })
 map('n', 'dd', '"_dd', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('v', 'd', '"_d', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('x', 'd', '"_d', { noremap = true, silent = true })
+
