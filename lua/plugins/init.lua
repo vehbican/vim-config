@@ -1,4 +1,3 @@
-
 return {
   {
     "stevearc/conform.nvim",
@@ -11,6 +10,7 @@ return {
       require "configs.lspconfig"
     end,
   },
+
   {
     "jose-elias-alvarez/null-ls.nvim",
     config = function()
@@ -33,4 +33,18 @@ return {
       })
     end,
   },
+
+  -- Lazygit Plugin
+
+{
+  "kdheepak/lazygit.nvim",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+  },
+  lazy = false,
+  config = function()
+    vim.keymap.set("n", "<leader>gg", ":LazyGit<CR>", { noremap = true, silent = true })
+  end,
+},
+
 }
