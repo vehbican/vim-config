@@ -83,4 +83,24 @@ lspconfig.dartls.setup {
   capabilities = nvlsp.capabilities,
 }
 
+require("lspconfig").rust_analyzer.setup({
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = { allFeatures = true },
+      checkOnSave = {
+        command = "clippy"
+      }
+    }
+  },
+  on_attach = function(client, bufnr)
+    if client.server_capabilities.documentFormattingProvider then
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format({ async = false })
+        end
+      })
+    end
+  end,
+})
 
