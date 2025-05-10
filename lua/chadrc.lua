@@ -2,7 +2,7 @@
 local M = {}
 
 M.base46 = {
-  theme = "chadracula-evondev",
+  theme = "gatekeeper",
   hl_override = require("custom.highlights").override,
 }
 
