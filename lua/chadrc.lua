@@ -2,7 +2,7 @@
 local M = {}
 
 M.base46 = {
-  theme = "gatekeeper",
+  theme = "oxocarbon",
   hl_override = require("custom.highlights").override,
 }
 

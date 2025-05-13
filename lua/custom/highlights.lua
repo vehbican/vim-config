@@ -2,18 +2,17 @@
 local M = {}
 
 M.override = {
-  Normal = { bg = "none" },
-  NormalNC = { bg = "none" },
-  NormalFloat = { bg = "none" },
-  FloatBorder = { bg = "none" },
-  SignColumn = { bg = "none" },
-  VertSplit = { bg = "none" },
+  Normal = { bg = "#1e1e2e" },
+  NormalNC = { bg = "#1e1e2e" },
+  NormalFloat = { bg = "#1e1e2e" },
+  FloatBorder = { bg = "#1e1e2e" },
+  SignColumn = { bg = "#1e1e2e" },
+  VertSplit = { bg = "#1e1e2e" },
 
-  -- Add these lines for nvim-tree or neo-tree
-  NvimTreeNormal = { bg = "none" },
-  NvimTreeNormalNC = { bg = "none" },
-  NvimTreeEndOfBuffer = { bg = "none" },
-  NvimTreeVertSplit = { bg = "none" },
+  NvimTreeNormal = { bg = "#1e1e2e" },
+  NvimTreeNormalNC = { bg = "#1e1e2e" },
+  NvimTreeEndOfBuffer = { bg = "#1e1e2e" },
+  NvimTreeVertSplit = { bg = "#1e1e2e" },
 }
 
 return M
