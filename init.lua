@@ -23,6 +23,14 @@ require("lazy").setup({
   { import = "plugins" },
 }, lazy_config)
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "htmlangular",
+  callback = function()
+    vim.bo.filetype = "html"
+  end,
+})
+
+
 -- load theme
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
