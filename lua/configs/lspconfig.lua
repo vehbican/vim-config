@@ -4,39 +4,28 @@ local lspconfig = require "lspconfig"
 local nvlsp = require "nvchad.configs.lspconfig"
 local null_ls = require("null-ls")
 
--- LSP servers basic setup
-local servers = { "html", "cssls" }
-
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = nvlsp.on_attach,
-    on_init = nvlsp.on_init,
-    capabilities = nvlsp.capabilities,
-  }
-end
-
--- Angular LSP
-lspconfig.angularls.setup {
-  cmd = {
-    vim.fn.stdpath("data") .. "/mason/bin/ngserver",
-    "--stdio",
-    "--tsProbeLocations",
-    vim.fn.stdpath("data") .. "/mason/packages/angular-language-server/node_modules",
-    "--ngProbeLocations",
-    vim.fn.stdpath("data") .. "/mason/packages/angular-language-server/node_modules",
-  },
-  filetypes = { "typescript", "html", "typescriptreact", "typescript.tsx", "htmlangular" },
-  root_dir = lspconfig.util.root_pattern("angular.json", ".git"),
+-- HTML LSP
+lspconfig.html.setup {
+  cmd = { "/home/can/.nvm/versions/node/v16.20.2/bin/vscode-html-language-server", "--stdio" },
+  filetypes = { "html" },
   on_attach = nvlsp.on_attach,
   capabilities = nvlsp.capabilities,
 }
 
--- TypeScript
+-- CSS LSP
+lspconfig.cssls.setup {
+  on_attach = nvlsp.on_attach,
+  capabilities = nvlsp.capabilities,
+}
+
+-- TypeScript 
 lspconfig.ts_ls.setup {
+  cmd = { "/home/can/.nvm/versions/node/v16.20.2/bin/typescript-language-server", "--stdio" },
   on_attach = nvlsp.on_attach,
   capabilities = nvlsp.capabilities,
   root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", ".git"),
 }
+
 
 -- GraphQL
 lspconfig.graphql.setup {
@@ -94,7 +83,7 @@ null_ls.setup({
         "typescript",
         "typescriptreact",
         "html",
-        "htmlangular", -- ✨ kritik eklenti!
+        "htmlangular", 
         "css",
       },
     }),
