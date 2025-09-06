@@ -11,49 +11,12 @@ return {
     end,
   },
 
-{
-  "nvimtools/none-ls.nvim",
-  event = "VeryLazy", 
-  config = function()
-    local null_ls = require("null-ls")
-    local formatting = null_ls.builtins.formatting
-
-    null_ls.setup({
-      sources = {
-        formatting.prettier.with({
-          filetypes = {
-            "javascript",
-            "typescript",
-            "javascriptreact",
-            "typescriptreact",
-            "html",
-            "css",
-          },
-        }),
-        formatting.google_java_format, 
-      },
-      on_attach = function(client, bufnr)
-        if client.supports_method("textDocument/formatting") then
-          local augroup = vim.api.nvim_create_augroup("LspFormatting", { clear = true })
-          vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-          vim.api.nvim_create_autocmd("BufWritePre", {
-            group = augroup,
-            buffer = bufnr,
-            callback = function()
-              vim.lsp.buf.format({
-                async = false,
-                bufnr = bufnr,
-                filter = function(format_client)
-                  return format_client.name == "null-ls" or format_client.name == "none-ls"
-                end,
-              })
-            end,
-          })
-        end
-      end,
-    })
-  end,
-},
+  {
+    "nvimtools/none-ls.nvim",
+    config = function()
+      require("configs.null-ls")
+    end,
+  },
 
   {
     "williamboman/mason.nvim",
@@ -67,14 +30,40 @@ return {
     dependencies = { "williamboman/mason.nvim" },
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = {
-          "rust_analyzer",
-          "jdtls",
-          "html",
-          "tsserver",
-          "cssls",
-        },
+        ensure_installed = { "rust_analyzer" }, 
       })
+    end,
+  },
+
+  {
+    "akinsho/flutter-tools.nvim",
+    ft = { "dart" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "stevearc/dressing.nvim",
+      "neovim/nvim-lspconfig",
+    },
+    config = function()
+      local nvlsp = require("nvchad.configs.lspconfig")
+      require("flutter-tools").setup({
+        lsp = {
+          on_attach = nvlsp.on_attach,
+          capabilities = nvlsp.capabilities,
+        },
+        widget_guides = { enabled = true },
+        closing_tags = { enabled = true, prefix = " // ", highlight = "Comment" },
+        debugger = { enabled = true, run_via_dap = true }, 
+      })
+    end,
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = function(_, opts)
+      opts.ensure_installed = opts.ensure_installed or {}
+      if type(opts.ensure_installed) == "table" then
+        table.insert(opts.ensure_installed, "dart")
+      end
     end,
   },
 }

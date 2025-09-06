@@ -7,32 +7,28 @@ null_ls.setup({
       filetypes = {
         "javascript", "javascriptreact",
         "typescript", "typescriptreact",
-        "html", "htmlangular",
-        "css",
+        "html", "css",
       },
     }),
-    formatting.google_java_format, 
+
+    formatting.dart_format,
   },
 
   on_attach = function(client, bufnr)
-    if client.supports_method("textDocument/formatting") then
-      local augroup = vim.api.nvim_create_augroup("LspFormatting", { clear = true })
-
-      vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        group = augroup,
-        buffer = bufnr,
-        callback = function()
-          vim.lsp.buf.format({
-            async = false,
-            bufnr = bufnr,
-            filter = function(format_client)
-              return format_client.name == "null-ls"
-            end,
-          })
-        end,
-      })
+    if client.name ~= "null-ls" or not client.supports_method("textDocument/formatting") then
+      return
     end
+    local grp = vim.api.nvim_create_augroup("NullLsFormat", { clear = false })
+    vim.api.nvim_clear_autocmds({ group = grp, buffer = bufnr })
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      group = grp,
+      buffer = bufnr,
+      callback = function()
+        vim.lsp.buf.format({
+          async = false,
+          filter = function(c) return c.name == "null-ls" end,
+        })
+      end,
+    })
   end,
 })
