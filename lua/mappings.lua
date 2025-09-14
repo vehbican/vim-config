@@ -25,4 +25,4 @@ map('n', 'dd', '"_dd', { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap('v', 'd', '"_d', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('x', 'd', '"_d', { noremap = true, silent = true })
-
+map("n", "<leader>z", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
