@@ -1,85 +1,71 @@
--- Load NvChad defaults
 require("nvchad.configs.lspconfig").defaults()
-local lspconfig = require "lspconfig"
-local nvlsp = require "nvchad.configs.lspconfig"
-local null_ls = require "null-ls"
 
--- yardımcı: exepath ile binary bul
+local nvlsp = require "nvchad.configs.lspconfig"
 local exepath = vim.fn.exepath
 
--- HTML
-lspconfig.html.setup {
-  cmd = { exepath("vscode-html-language-server"), "--stdio" },
-  filetypes = { "html" },
-  on_attach = nvlsp.on_attach,
-  capabilities = nvlsp.capabilities,
-}
-
--- CSS
-lspconfig.cssls.setup {
-  cmd = { exepath("vscode-css-language-server"), "--stdio" },
-  on_attach = nvlsp.on_attach,
-  capabilities = nvlsp.capabilities,
-}
-
--- TypeScript (lspconfig'de adı artık ts_ls)
-lspconfig.ts_ls.setup {
-  cmd = { exepath("typescript-language-server"), "--stdio" },
-  on_attach = nvlsp.on_attach,
-  capabilities = nvlsp.capabilities,
-  root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", ".git"),
-}
-
--- GraphQL (sende binary yoksa sabit cmd yazma, PATH'te ise kendisi bulur)
-lspconfig.graphql.setup {
-  on_attach = nvlsp.on_attach,
-  capabilities = nvlsp.capabilities,
-  filetypes = { "graphql", "typescriptreact", "javascriptreact" },
-}
-
--- Rust
-lspconfig.rust_analyzer.setup {
-  settings = {
-    ["rust-analyzer"] = {
-      cargo = { allFeatures = true },
-      checkOnSave = { command = "clippy" },
+local servers = {
+  html = {
+    cmd = { exepath "vscode-html-language-server", "--stdio" },
+    filetypes = { "html" },
+  },
+  cssls = {
+    cmd = { exepath "vscode-css-language-server", "--stdio" },
+  },
+  ts_ls = {
+    cmd = { exepath "typescript-language-server", "--stdio" },
+    root_dir = vim.fs.dirname(vim.fs.find({ "package.json", "tsconfig.json", ".git" }, { upward = true })[1]),
+  },
+  graphql = {
+    filetypes = { "graphql", "typescriptreact", "javascriptreact" },
+  },
+  rust_analyzer = {
+    settings = {
+      ["rust-analyzer"] = {
+        cargo = { allFeatures = true },
+        checkOnSave = { command = "clippy" },
+      },
+    },
+    on_attach = function(client, bufnr)
+      if client.server_capabilities.documentFormattingProvider then
+        vim.api.nvim_create_autocmd("BufWritePre", {
+          buffer = bufnr,
+          callback = function()
+            vim.lsp.buf.format { async = false }
+          end,
+        })
+      end
+    end,
+  },
+  gopls = {
+    cmd = { exepath "gopls" },
+    settings = {
+      gopls = {
+        gofumpt = true,
+        analyses = { unusedparams = true },
+        staticcheck = true,
+      },
     },
   },
-  on_attach = function(client, bufnr)
-    if client.server_capabilities.documentFormattingProvider then
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        buffer = bufnr,
-        callback = function() vim.lsp.buf.format({ async = false }) end,
-      })
-    end
-  end,
 }
 
--- null-ls + Prettier
-null_ls.setup({
-  sources = {
-    null_ls.builtins.formatting.prettier.with({
-      filetypes = {
-        "javascript","javascriptreact","typescript","typescriptreact",
-        "html","htmlangular","css",
+if exepath "lua-language-server" ~= "" then
+  servers.lua_ls = {
+    cmd = { exepath "lua-language-server" },
+    settings = {
+      Lua = {
+        diagnostics = { globals = { "vim" } },
+        workspace = { checkThirdParty = false },
+        telemetry = { enable = false },
       },
-    }),
-  },
-  on_attach = function(client, bufnr)
-    if client.name == "null-ls" and client.supports_method("textDocument/formatting") then
-      vim.api.nvim_clear_autocmds({ group = "LspFormatting", buffer = bufnr })
-      vim.api.nvim_create_augroup("LspFormatting", { clear = false })
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        group = "LspFormatting",
-        buffer = bufnr,
-        callback = function()
-          vim.lsp.buf.format({
-            async = false,
-            bufnr = bufnr,
-            filter = function(c) return c.name == "null-ls" end,
-          })
-        end,
-      })
-    end
-  end,
-})
+    },
+  }
+end
+
+-- Sunucuları etkinleştir
+for name, opts in pairs(servers) do
+  opts.on_attach = opts.on_attach or nvlsp.on_attach
+  opts.capabilities = nvlsp.capabilities
+  vim.lsp.config[name] = opts
+end
+
+vim.lsp.enable(vim.tbl_keys(servers))

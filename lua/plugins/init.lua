@@ -30,7 +30,7 @@ return {
     dependencies = { "williamboman/mason.nvim" },
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "rust_analyzer" }, 
+        ensure_installed = { "rust_analyzer" },
       })
     end,
   },
@@ -52,7 +52,7 @@ return {
         },
         widget_guides = { enabled = true },
         closing_tags = { enabled = true, prefix = " // ", highlight = "Comment" },
-        debugger = { enabled = true, run_via_dap = true }, 
+        debugger = { enabled = true, run_via_dap = true },
       })
     end,
   },

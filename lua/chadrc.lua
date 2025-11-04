@@ -2,7 +2,7 @@
 local M = {}
 
 M.ui = {
-  transparency = false, 
+  transparency = false,
 }
 
 M.base46 = {
