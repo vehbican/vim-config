@@ -9,6 +9,7 @@ conform.setup {
     html = { "prettier" },
     css = { "prettier" },
     graphql = { "prettier" },
+    ejs = { "prettier" }, 
     rust = { "rustfmt" },
     lua = { "stylua" },
     go = { "goimports" },
@@ -24,6 +25,7 @@ conform.setup {
       html = true,
       css = true,
       graphql = true,
+      ejs = true, 
       rust = true,
       lua = true,
       go = true,
@@ -44,3 +46,13 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     require("conform").format { bufnr = args.buf, async = false, lsp_fallback = true }
   end,
 })
+
+require("conform").formatters.prettier = {
+  prepend_args = function(_, ctx)
+    if ctx.filename:match("%.ejs$") then
+      return { "--parser", "html" }
+    end
+    return {}
+  end,
+}
+
